@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: gifhub
+      POSTGRES_USER: gifhub
+      POSTGRES_PASSWORD: gifhub
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    command: gifhub-api
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+
+  worker:
+    build: .
+    command: gifhub-worker
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./data:/app/data
+
+  bot:
+    build: .
+    command: gifhub-bot
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./data:/app/data
+    profiles:
+      - bot
+
+volumes:
+  postgres-data:

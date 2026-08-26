@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gifhub"
+version = "0.1.0"
+description = "Phase 0 POC for a Telegram-first reactive media library."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "alembic>=1.13.0",
+    "fastapi>=0.115.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+    "psycopg[binary]>=3.2.0",
+    "python-multipart>=0.0.9",
+    "redis>=5.0.0",
+    "sqlalchemy>=2.0.0",
+    "python-magic>=0.4.27; platform_system != 'Windows'",
+    "uvicorn[standard]>=0.30.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.10.0",
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.5.0",
+]
+
+[project.scripts]
+gifhub-api = "gifhub.cli:run_api"
+gifhub-bot = "gifhub.cli:run_bot"
+gifhub-worker = "gifhub.cli:run_worker"
+gifhub-process = "gifhub.cli:process_media"
+gifhub-seed = "gifhub.cli:seed_database"
+
+[tool.hatch.build.targets.wheel]
+packages = ["gifhub"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

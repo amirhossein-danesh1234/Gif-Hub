@@ -1,0 +1,1 @@
+"""Telegram POC adapter."""
